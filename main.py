@@ -2,6 +2,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 import re
 import pandas as pd
+import os
 
 TARGET_HEADERS = ['관리번호', '기술분류', '중점분야', '기획유형', '과제명', '연구비용', '연구기간', '']
 
@@ -38,19 +39,22 @@ def process_table(root: ET.Element):
 
     return records
 
-def explore_xml_structure(file_path):
+def explore_hwpx_files_in_directory(directory_path):
     all_records = []
 
-    try:
-        with zipfile.ZipFile(file_path, 'r') as zip_ref:
-            for file_name in zip_ref.namelist():
-                if file_name.startswith('Contents/section') and file_name.endswith('.xml'):
-                    xml_content = zip_ref.read(file_name)
-                    root = ET.fromstring(xml_content)
-                    all_records.extend(process_table(root))
+    for filename in os.listdir(directory_path):
+        if filename.endswith('.hwpx'):
+            file_path = os.path.join(directory_path, filename)
+            try:
+                with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                    for file_name in zip_ref.namelist():
+                        if file_name.startswith('Contents/section') and file_name.endswith('.xml'):
+                            xml_content = zip_ref.read(file_name)
+                            root = ET.fromstring(xml_content)
+                            all_records.extend(process_table(root))
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+            except Exception as e:
+                print(f"An error occurred with {filename}: {e}")
 
     data = []
     for record in all_records:
@@ -70,10 +74,8 @@ def explore_xml_structure(file_path):
     df.to_csv('results.csv', index=False)
 
     print(df)
-    print(f"\n정답률: {accuracy:.2f}%")
+    print(f"\n최종 정답률: {accuracy:.2f}%")
 
-# File path
-file_path = ''
+directory_path = '/Users/hyobins/workspace/hwpx_metadata_test'
 
-# Explore the XML structure
-explore_xml_structure(file_path)
+explore_hwpx_files_in_directory(directory_path)
