@@ -4,7 +4,8 @@ import re
 import pandas as pd
 import os
 
-TARGET_HEADERS = ['관리번호', '기술분류', '중점분야', '기획유형', '과제명', '연구비용', '연구기간', '']
+# Headers of interest
+TARGET_HEADERS = ['관리번호', '기술분류', '중점분야', '기획유형', '과제명', '연구비용']
 
 def parse_content(header, content):
     """Parses content based on header."""
@@ -13,7 +14,7 @@ def parse_content(header, content):
         return match.group() if match else None
     elif header in ['중점분야', '기획유형']:
         return ', '.join([field.split('(')[0] for field in content.split(', ') if '√' in field])
-    elif header in ['기술분류', '과제명', '연구비용', '연구기간']:
+    elif header in ['기술분류', '과제명', '연구비용']:
         return content
     return None
 
@@ -76,6 +77,7 @@ def explore_hwpx_files_in_directory(directory_path):
     print(df)
     print(f"\n최종 정답률: {accuracy:.2f}%")
 
-directory_path = '/Users/hyobins/workspace/hwpx_metadata_test'
+# 이곳에 실제 파일 경로를 입력하세요
+directory_path = ''
 
 explore_hwpx_files_in_directory(directory_path)
