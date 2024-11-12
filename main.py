@@ -78,6 +78,6 @@ def explore_hwpx_files_in_directory(directory_path):
     print(f"\n최종 정답률: {accuracy:.2f}%")
 
 # 이곳에 실제 파일 경로를 입력하세요
-directory_path = ''
+directory_path = 'test_files'
 
 explore_hwpx_files_in_directory(directory_path)
